@@ -509,12 +509,12 @@ class RelatedField(ApiField):
         """
         Instaniates the related resource.
         """
-        related_resource = self.to_class()
+        related_resource = self.to_class(api_name=self.api_name)
 
         # Fix the ``api_name`` if it's not present.
-        if related_resource._meta.api_name is None:
-            if self._resource and not self._resource._meta.api_name is None:
-                related_resource._meta.api_name = self._resource._meta.api_name
+        if related_resource.api_name is None:
+            if self._resource and not self._resource.api_name is None:
+                related_resource.api_name = self._resource.api_name
 
         # Try to be efficient about DB queries.
         related_resource.instance = related_instance

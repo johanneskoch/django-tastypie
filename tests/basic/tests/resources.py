@@ -25,9 +25,11 @@ class NoPathLazyUserResource(ModelResource):
 class LazyUserResource(ModelResource):
     notes = ToManyField('basic.tests.resources.NoteResource', 'notes')
 
+    def __init__(self):
+        super(LazyUserResource, self).__init__(api_name='foo')
+
     class Meta:
         queryset = User.objects.all()
-        api_name = 'foo'
 
 
 class NoteResource(ModelResource):
@@ -85,7 +87,7 @@ class NoteModelResourceTestCase(TestCase):
         # reversals will fail. Fakes the instance as ``None``, since for
         # testing purposes, we don't care.
         related = lur.notes.get_related_resource(None)
-        self.assertEqual(related._meta.api_name, 'foo')
+        self.assertEqual(related.api_name, 'foo')
 
 
 class AnnotatedNoteModelResourceTestCase(TestCase):

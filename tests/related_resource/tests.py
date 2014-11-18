@@ -320,7 +320,7 @@ class NestedRelatedResourceTest(TestCase):
         pk = Person.objects.all()[0].pk
         request = MockRequest()
         request.method = 'GET'
-        request.path = reverse('api_dispatch_detail', kwargs={'pk': pk, 'resource_name': pr._meta.resource_name, 'api_name': pr._meta.api_name})
+        request.path = reverse('api_dispatch_detail', kwargs={'pk': pk, 'resource_name': pr._meta.resource_name, 'api_name': pr.api_name})
         resp = pr.get_detail(request, pk=pk)
         self.assertEqual(resp.status_code, 200)
 
@@ -336,7 +336,7 @@ class NestedRelatedResourceTest(TestCase):
         request = MockRequest()
         request.GET = {'format': 'json'}
         request.method = 'PUT'
-        request.path = reverse('api_dispatch_detail', kwargs={'pk': pk, 'resource_name': pr._meta.resource_name, 'api_name': pr._meta.api_name})
+        request.path = reverse('api_dispatch_detail', kwargs={'pk': pk, 'resource_name': pr._meta.resource_name, 'api_name': pr.api_name})
         request.set_body(resp.content.decode('utf-8'))
         resp = pr.put_detail(request, pk=pk)
         self.assertEqual(resp.status_code, 204)
@@ -431,7 +431,7 @@ class NestedRelatedResourceTest(TestCase):
         pk = Person.objects.all()[0].pk
         request = MockRequest()
         request.method = 'GET'
-        request.path = reverse('api_dispatch_detail', kwargs={'pk': pk, 'resource_name': pr._meta.resource_name, 'api_name': pr._meta.api_name})
+        request.path = reverse('api_dispatch_detail', kwargs={'pk': pk, 'resource_name': pr._meta.resource_name, 'api_name': pr.api_name})
         resp = pr.get_detail(request, pk=pk)
         self.assertEqual(resp.status_code, 200)
 
@@ -449,7 +449,7 @@ class NestedRelatedResourceTest(TestCase):
         request.GET = {'format': 'json'}
         request.method = 'PUT'
         request.set_body(json.dumps(person))
-        request.path = reverse('api_dispatch_detail', kwargs={'pk': pk, 'resource_name': pr._meta.resource_name, 'api_name': pr._meta.api_name})
+        request.path = reverse('api_dispatch_detail', kwargs={'pk': pk, 'resource_name': pr._meta.resource_name, 'api_name': pr.api_name})
         resp = pr.put_detail(request, pk=pk)
         self.assertEqual(resp.status_code, 204)
 
@@ -480,7 +480,7 @@ class NestedRelatedResourceTest(TestCase):
         request = MockRequest()
         request.GET = {'format': 'json'}
         request.method = 'POST'
-        request.path = reverse('api_dispatch_list', kwargs={'resource_name': pr._meta.resource_name, 'api_name': pr._meta.api_name})
+        request.path = reverse('api_dispatch_list', kwargs={'resource_name': pr._meta.resource_name, 'api_name': pr.api_name})
         request.set_body(json.dumps(data))
         resp = pr.post_list(request)
         self.assertEqual(resp.status_code, 201)
@@ -491,7 +491,7 @@ class NestedRelatedResourceTest(TestCase):
         pk = Person.objects.all()[0].pk
         request = MockRequest()
         request.method = 'GET'
-        request.path = reverse('api_dispatch_detail', kwargs={'pk': pk, 'resource_name': pr._meta.resource_name, 'api_name': pr._meta.api_name})
+        request.path = reverse('api_dispatch_detail', kwargs={'pk': pk, 'resource_name': pr._meta.resource_name, 'api_name': pr.api_name})
         resp = pr.get_detail(request, pk=pk)
         self.assertEqual(resp.status_code, 200)
 
@@ -510,7 +510,7 @@ class NestedRelatedResourceTest(TestCase):
         request.GET = {'format': 'json'}
         request.method = 'PUT'
         request.set_body(json.dumps(person))
-        request.path = reverse('api_dispatch_detail', kwargs={'pk': pk, 'resource_name': pr._meta.resource_name, 'api_name': pr._meta.api_name})
+        request.path = reverse('api_dispatch_detail', kwargs={'pk': pk, 'resource_name': pr._meta.resource_name, 'api_name': pr.api_name})
         resp = pr.put_detail(request, pk=pk)
         self.assertEqual(resp.status_code, 204)
 
@@ -521,7 +521,7 @@ class NestedRelatedResourceTest(TestCase):
         person['dogs'][0]['bones'][0]['color'] = 'gray'
         body = json.dumps(person)
         request.set_body(body)
-        request.path = reverse('api_dispatch_detail', kwargs={'pk': pk, 'resource_name': pr._meta.resource_name, 'api_name': pr._meta.api_name})
+        request.path = reverse('api_dispatch_detail', kwargs={'pk': pk, 'resource_name': pr._meta.resource_name, 'api_name': pr.api_name})
         resp = pr.put_detail(request, pk=pk)
         self.assertEqual(resp.status_code, 204)
 
@@ -626,7 +626,7 @@ class RelatedSaveCallsTest(TestCase):
 
         request.path = reverse('api_dispatch_detail', kwargs={'pk': tag.pk,
                                                               'resource_name': resource._meta.resource_name,
-                                                              'api_name': resource._meta.api_name})
+                                                              'api_name': resource.api_name})
 
         resource.put_detail(request)
 

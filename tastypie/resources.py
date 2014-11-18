@@ -170,9 +170,7 @@ class Resource(six.with_metaclass(DeclarativeMetaclass)):
     """
     def __init__(self, api_name=None):
         self.fields = deepcopy(self.base_fields)
-
-        if not api_name is None:
-            self._meta.api_name = api_name
+        self.api_name = api_name
 
     def __getattr__(self, name):
         if name in self.fields:
@@ -749,10 +747,8 @@ class Resource(six.with_metaclass(DeclarativeMetaclass)):
         """
         kwargs = {
             'resource_name': self._meta.resource_name,
+            'api_name': self.api_name,
         }
-
-        if self._meta.api_name is not None:
-            kwargs['api_name'] = self._meta.api_name
 
         if bundle_or_obj is not None:
             kwargs.update(self.detail_uri_kwargs(bundle_or_obj))
@@ -826,7 +822,7 @@ class Resource(six.with_metaclass(DeclarativeMetaclass)):
 
             # A touch leaky but it makes URI resolution work.
             if getattr(field_object, 'dehydrated_type', None) == 'related':
-                field_object.api_name = self._meta.api_name
+                field_object.api_name = self.api_name
                 field_object.resource_name = self._meta.resource_name
 
             bundle.data[field_name] = field_object.dehydrate(bundle, for_list=for_list)
@@ -1007,7 +1003,7 @@ class Resource(six.with_metaclass(DeclarativeMetaclass)):
             smooshed.append("%s=%s" % (key, value))
 
         # Use a list plus a ``.join()`` because it's faster than concatenation.
-        return "%s:%s:%s:%s" % (self._meta.api_name, self._meta.resource_name, ':'.join(args), ':'.join(sorted(smooshed)))
+        return "%s:%s:%s:%s" % (self.api_name, self._meta.resource_name, ':'.join(args), ':'.join(sorted(smooshed)))
 
     # Data access methods.
 
