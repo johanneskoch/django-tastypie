@@ -859,6 +859,8 @@ class Resource(six.with_metaclass(DeclarativeMetaclass)):
         bundle = self.hydrate(bundle)
 
         for field_name, field_object in self.fields.items():
+            field_object.api_name = self.api_name
+
             if field_object.readonly is True:
                 continue
 
