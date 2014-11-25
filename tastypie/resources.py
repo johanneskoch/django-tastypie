@@ -1869,6 +1869,7 @@ class BaseModelResource(Resource):
             # Recursively descend through the remaining lookups in the filter,
             # if any. We should ensure that all along the way, we're allowed
             # to filter on that field by the related resource.
+            self.fields[field_name].api_name = self.api_name
             related_resource = self.fields[field_name].get_related_resource(None)
             return [self.fields[field_name].attribute] + related_resource.check_filtering(filter_bits[0], filter_type, filter_bits[1:])
 
