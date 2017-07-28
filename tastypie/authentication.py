@@ -1,6 +1,7 @@
 from __future__ import unicode_literals
 import base64
 import hmac
+import logging
 import time
 import uuid
 
@@ -33,6 +34,9 @@ try:
     import oauth_provider
 except ImportError:
     oauth_provider = None
+
+
+logger = logging.getLogger('tastypie.authentication')
 
 
 class Authentication(object):
@@ -431,22 +435,27 @@ class OAuthAuthentication(Authentication):
             try:
                 token = store.get_access_token(request, oauth_request, consumer, oauth_request.get_parameter('oauth_token'))
             except oauth_provider.store.InvalidTokenError:
+                logger.error('OAuth token not valid', extra={'request': request}, exc_info=True)
                 return oauth_provider.utils.send_oauth_error(oauth2.Error(_('Invalid access token: %s') % oauth_request.get_parameter('oauth_token')))
 
             try:
                 self.validate_token(request, consumer, token)
             except oauth2.Error as e:
+                logger.error('OAuth token not active', extra={'request': request}, exc_info=True)
                 return oauth_provider.utils.send_oauth_error(e)
 
             if consumer and token:
                 if not self.check_active(token.user):
+                    logger.error('OAuth user not active', extra={'request': request, 'user': token.user})
                     return False
 
                 request.user = token.user
                 return True
 
+            logger.error('OAuth missing consumer or token', extra={'request': request, 'consumer': consumer, 'token': token})
             return oauth_provider.utils.send_oauth_error(oauth2.Error(_('You are not allowed to access this resource.')))
 
+        logger.error('OAuth request not valid', extra={'request': request})
         return oauth_provider.utils.send_oauth_error(oauth2.Error(_('Invalid request parameters.')))
 
     def is_in(self, params):
